@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-import os, fnmatch
+import os, fnmatch, re, sys
+
+def rename_var(output_path, filename, oldline, newline):
+    if (os.path.exists(output_path)):
+        original_file = output_path + filename
+        temp_file = output_path + filename + '.new'
+        tmp = open(temp_file, 'w+')
+        orig = open(original_file, 'r') # shutil failure work-around
+        for line in orig:
+            if (line != oldline):
+                tmp.write(line)
+            else:
+                tmp.write(line.replace(oldline, newline))
+        tmp.close()
+        orig.close()
+        os.rename(temp_file, output_path + filename)
 
 def gen_protos(input_path, output_path, target, lang):
     if(os.path.isdir(input_path)):
@@ -47,7 +62,7 @@ def check_paths(files_arr):
 # Assume the script is cloned into SCAII or Sky_RTS.
 # Get curent directory and go up one level.
 if "ci" not in str(os.getcwd()):
-    os.chdir(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
+    os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
 os.chdir('..')
 
 # Array that holds all raw protos in SCAII
@@ -78,11 +93,13 @@ lang = 'js'
 gen_protos(input_path, output_path, target, lang)
 
 # Generate all python protos for SCAII
-input_path = input_path
+input_path = check_paths(SCAII_protos)
 output_path = check_paths(SCAII_python)
 target = ''
 lang = 'python'
 gen_protos(input_path, output_path, target, lang)
+rename_var(output_path, 'scaii_pb2.py', 'import cfg_pb2 as cfg__pb2\n', 'import scaii.protos.cfg_pb2 as cfg__pb2\n')
+rename_var(output_path, 'scaii_pb2.py', 'import viz_pb2 as viz__pb2\n', 'import scaii.protos.viz_pb2 as viz__pb2\n')
 
 # Generate all python protos for Sky-rts
 input_path = check_paths(sky_rts_protos)
