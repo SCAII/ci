@@ -37,12 +37,12 @@ def check_paths(files_arr):
         for p in range(1, len(files_arr)):
             current = find(files_arr[p], os.getcwd())
             if dir == current:
-                return dir + "/"
+                return str(dir) + "/"
             else:
                 print("ERROR: Could not find directory with files: " + str(files_arr))
                 exit(1)
     else:
-        return dir + "/"
+        return str(dir) + "/"
 
 
 # Array that holds all raw protos in SCAII
