@@ -44,6 +44,11 @@ def check_paths(files_arr):
     else:
         return str(dir) + "/"
 
+# Assume the script is cloned into SCAII or Sky_RTS.
+# Get curent directory and go up one level.
+if "ci" not in str(os.getcwd()):
+    os.chdir(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
+os.chdir('..')
 
 # Array that holds all raw protos in SCAII
 # Identifies /SCAII/protos/
