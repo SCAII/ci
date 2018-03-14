@@ -14,6 +14,7 @@ def rename_var(output_path, filename, oldline, newline):
                 tmp.write(line.replace(oldline, newline))
         tmp.close()
         orig.close()
+        os.remove(output_path + filename)
         os.rename(temp_file, output_path + filename)
 
 def gen_protos(input_path, output_path, target, lang):
@@ -48,21 +49,24 @@ def find(pattern, path):
 # Get path and make sure the first directory found has all the files in it.
 def check_paths(files_arr):
     dir = find(files_arr[0], os.getcwd())
+    print("Found " + files_arr[0] + " at " + str(dir))
+
     if (len(files_arr) > 1):
         for p in range(1, len(files_arr)):
             current = find(files_arr[p], os.getcwd())
             if dir == current:
-                return str(dir) + "/"
+                print("Found " + files_arr[p] + " at " + str(dir))
+                return str(dir) + "\\"
             else:
                 print("ERROR: Could not find directory with files: " + str(files_arr))
                 exit(1)
     else:
-        return str(dir) + "/"
+        return str(dir) + "\\"
 
 # Assume the script is cloned into SCAII or Sky_RTS.
 # Get curent directory and go up one level.
-if "ci" not in str(os.getcwd()):
-    os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
+#if "ci" not in str(os.getcwd()):
+os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
 os.chdir('..')
 
 # Array that holds all raw protos in SCAII
